@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        /* 🌸 Body styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 🌼 Card */
+        .container {
+            background: #fff;
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 350px;
+        }
+
+        h1 {
+            color: #6C63FF;
+            margin-bottom: 25px;
+        }
+
+        /* 🌸 Input */
+        input[type="url"] {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+
+        input[type="url"]:focus {
+            border-color: #6C63FF;
+            outline: none;
+        }
+
+        /* 🌼 Button */
+        button {
+            background-color: #6C63FF;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #574fd1;
+            transform: scale(1.05);
+        }
+
+        /* 🌸 Result */
+        #result {
+            margin-top: 20px;
+            word-break: break-all;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #result a {
+            color: #6C63FF;
+            text-decoration: none;
+        }
+
+        #result a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ URL Shortener ✨</h1>
+
+        <form id="shortenForm">
+            <input type="url" id="longUrl" placeholder="Enter your long URL here" required>
+            <button type="submit">Shorten URL</button>
+        </form>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('shortenForm');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const longUrl = document.getElementById('longUrl').value;
+
+            try {
+                const res = await fetch('/shorten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ longUrl })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    result.innerHTML = `🎉 Short URL: <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>`;
+                } else {
+                    result.innerText = `⚠️ ${data.message}`;
+                }
+            } catch (err) {
+                result.innerText = '⚠️ Error shortening URL';
+            }
+        });
+    </script>
+</body>
+</html>
